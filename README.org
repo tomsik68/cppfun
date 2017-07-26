@@ -6,3 +6,9 @@ cppfun is a collection of small experiments, mostly with modern C++17.
 
 + =one_of=: checks if variable/value is in pre-defined list of compile-time constants
 + =const_list=: trying to mimic container from stdlib as close as possible... at compile-time...
+
+
+** License
+
+All sources in this repository are available under MIT license. 
+(Check LICENSE for more information)
