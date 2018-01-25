@@ -1,0 +1,66 @@
+* =const_list<T>=
+  The aim is to provide compile-time list of compile-time constants without using containers.
+There are also 2 basic functions that enable the user to work with this list: =for_each= and =accumulate=.
+
+There is probably no advantage to using this, but it is indeed fun to implement.
+
+** Examples
+
++ =for_each=:
+#+begin_src cpp
+  const_list<int, 1, 2, 3> list;
+
+  list.for_each( [](int e) { cout << e << ","; } );
+#+end_src
+
++ =accumulate=:
+#+BEGIN_SRC cpp
+  const_list<int, 0, 1, 2> list;
+
+  int s = list.accumulate( [](int a, int b) { return (a + b); }, 0);
+  cout << s; // 3
+#+END_SRC
+
+** Notes
+
+*** what about classical foreach?
+
+If you have any standard C++ container, you can use the famous for-each loop to iterate through, like this:
+#+BEGIN_SRC cpp
+  vector<int> numbers = { 1, 2, 3, 4, 5 };
+  for (int i : numbers) {
+      cout << i;
+  }
+#+END_SRC
+
+Let's just keep in mind that the code above (roughly) translates to the following:
+
+#+BEGIN_SRC cpp
+  vector<int> numbers = { 1, 2, 3, 4, 5};
+  auto iter = numbers.begin();
+  while( iter != numbers.end()) {
+      cout << *iter;
+      ++iter;
+  }
+
+
+#+END_SRC
+
+So the question is, why doesn't =const_list= support iteration?
+
+I originally wanted to implement it, but then I realized there is a
+huge problem with this.  Basically, =const_list= carries its items in
+type information, so =const_list<int, 1, 2>= is entirely different
+type than =const_list<int, 1>=. They might share the same functions,
+but there is no common ancestor.
+
+Thus, if we the compiler wanted to translate a for-each loop with
+=const_list= to a while loop similar to one above, it would have to
+derive correct type for =iter=. However, for our list to remain truly
+=constexpr=, type for our iterator would (I think) have to carry all
+items in the list. That leads to problems with implementing
+=operator++= on an iterator, because that would need to change its own
+type, which is nonsense.
+
+Finally, note that the =for_each= function seen in example is
+implemented using variadic templates and recursive functions ;) .

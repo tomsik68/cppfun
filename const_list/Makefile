@@ -3,5 +3,8 @@ CXX=g++
 
 all: test
 
-test: const_list2.hpp test.cpp
-	$(CXX) $(CXXFLAGS) test.cpp
+test: const_list.hpp test.cpp
+	$(CXX) $(CXXFLAGS) test.cpp -o test
+
+clean:
+	rm test
